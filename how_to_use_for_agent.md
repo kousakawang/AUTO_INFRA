@@ -5,7 +5,7 @@ This guide explains how to use the AI Model Serving Benchmark Framework to run a
 ## Important: Agent Workflow
 
 **When a user asks you to run benchmarks:**
-1. **First**, generate a configuration Python file (e.g., `examples/my_config.py`) according to the user's requirements
+1. **First**, generate a configuration Python file (e.g., `examples/my_config.py`) according to the user's requirements, and put the config  file under test_cases. Add time information in the file name
 2. **Then**, execute the pipeline with this config file using the commands below
 3. **Always start with a dry-run** to verify the configuration before running real benchmarks
 
