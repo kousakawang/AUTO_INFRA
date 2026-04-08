@@ -1,0 +1,1 @@
+python3 -m sglang.bench_serving --backend sglang-oai-chat --dataset-name image --num-prompts 128 --apply-chat-template --random-output-len 64 --random-input-len 32 --image-resolution 448x448 --image-format jpeg --image-count 1 --image-content blank --random-range-ratio 1 --max-concurrency 20 --host=127.0.0.1 --port=8070

@@ -1,0 +1,4 @@
+${ENV_OPT}  SGLANG_VLM_CACHE_SIZE_MB=0 python3 -m sglang.launch_server --model-path ${MODEL_PATH} --host 127.0.0.1 --port ${PORT} --mem-fraction-static ${STATIC_MEM_USE} --cuda-graph-max-bs 128 ${DEPLOY_METHOD} --mm-attention-backend fa3 --cuda-graph-bs 128 120 112 104 96 88 80 72 64 56 48 40 32 24 16 8 4 2 1 --disable-radix-cache ${SERVER_OPT_ARGS}
+
+
+
