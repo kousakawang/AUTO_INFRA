@@ -131,7 +131,11 @@ def merge_options(base_tokens: List[str], override_opts: List[str]) -> List[str]
 
 
 class TemplateLoader:
-    def __init__(self, base_dir: str = "/root/AUTO_TEST"):
+    def __init__(self, base_dir: str = None):
+        if base_dir is None:
+            # Use the directory of this file as base, then go up one level to project root
+            import os
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.base_dir = base_dir
         self.server_templates: Dict[int, str] = {}
         self.benchmark_templates: Dict[int, str] = {}
