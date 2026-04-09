@@ -5,9 +5,29 @@ This guide explains how to use the AI Model Serving Benchmark Framework to run a
 ## Important: Agent Workflow
 
 **When a user asks you to run benchmarks:**
-1. **First**, generate a configuration Python file (e.g., `examples/my_config.py`) according to the user's requirements, and put the config  file under test_cases. Add time information in the file name
-2. **Then**, execute the pipeline with this config file using the commands below
-3. **Always start with a dry-run** to verify the configuration before running real benchmarks
+1. **First, try to use the config generator skill** to automatically create the configuration file. The skill is located at `skills/generate_config.py`.
+2. If the skill cannot be used, reference the skill's code (`skills/config_generator/`) to understand how to manually generate the config file.
+3. Put the config file under `test_cases/` with a timestamp in the file name.
+4. **Then**, execute the pipeline with this config file using the commands below.
+5. **Always start with a dry-run** to verify the configuration before running real benchmarks.
+
+**Using the config generator skill:**
+```bash
+# From a raw test case file
+python3 skills/generate_config.py --file raw_folder/raw_test_case.sh
+
+# Interactive mode
+python3 skills/generate_config.py
+```
+
+**If the user provides raw launch server commands and benchmark commands (and skill is not available):**
+1. Compare these raw commands with the templates in `launch_server_template/` and `benchmark_template/`
+2. Identify which template (basic_template_id) matches best
+3. Extract the model path, port, device IDs, tensor parallel size, and other parameters
+4. Identify which environment optimizations (env_opt_id) and server argument optimizations (server_args_opt_id) are used by comparing with `OPT/ENV_OPT.md` and `OPT/SERVER_ARG_OPT.md`
+5. Extract benchmark parameters: input length, output length, image size, image count, max concurrency, etc.
+6. Fill in the config file based on this analysis
+7. Refer to `skills/config_generator/config_builder.py` for detailed implementation examples
 
 ## Overview
 
@@ -77,7 +97,7 @@ config_dict = {
 | `model_test_times` | List[int] | Number of times to test each model. Length must match `model_paths`. The sum of this list equals the total number of services to launch. |
 | `model_deploy_method` | List[str] | Deployment method for each service. Use "tp1" for tensor parallelism 1 (single GPU), "tp2" for tensor parallelism 2 (2 GPUs), etc. Length must equal sum of `model_test_times`. |
 | `device_id` | List[List[int]] | GPU device IDs for each service. Each sublist contains the CUDA device IDs to use for that service. Length must equal sum of `model_test_times`. |
-| `basic_template_id` | List[int] | Which launch server template to use for each service. 0 = template 1, 1 = template 2, etc. See `launch_server_template/` directory. Length must equal sum of `model_test_times`. |
+| `basic_template_id` | List[int] | Which launch server template to use for each service. 1 = template 1, 2 = template 2, etc. See `launch_server_template/` directory. Length must equal sum of `model_test_times`. |
 | `port` | List[int] | Port number for each service. Must be unique. Length must equal sum of `model_test_times`. |
 | `env_opt_id` | List[List[int]] | Environment optimization IDs from `OPT/ENV_OPT.md`. Use `-1` for no optimization, `0` for first option, `1` for second option, etc. Can specify multiple optimizations. Length must equal sum of `model_test_times`. |
 | `server_args_opt_id` | List[List[int]] | Server argument optimization IDs from `OPT/SERVER_ARG_OPT.md`. Use `-1` for no optimization, `0` for first option, `1` for second option, etc. Can specify multiple optimizations. Length must equal sum of `model_test_times`. |
