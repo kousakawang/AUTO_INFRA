@@ -1,0 +1,1 @@
+阅读how_to_use_for_agent.md 以及request_case下面的文件，请你根据测试说明dummy_template.md和用户请求request_case_1.md 完成对应测试配置文件的生成,并完成测试。你无须获得我的同意，直接制定计划并执行即可。
