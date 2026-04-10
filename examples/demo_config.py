@@ -4,7 +4,7 @@ sys.path.insert(0, '..')
 
 config_dict = {
     "user_config": {
-        "model_paths": ["/data01/models/Qwen3.5-9B", "/data01/models/Qwen3-VL-8B-Instruct"],
+        "model_paths": ["/data01/models/Qwen3.5-9B", "/data00/models/Qwen3-VL-8B-Instruct"],
         "model_test_times": [2, 1],
         "model_deploy_method": ["tp1", "tp1", "tp1"],
         "device_id": [[0], [1], [2]],
@@ -25,8 +25,8 @@ config_dict = {
             ["448x448", "448x448",],
             ["448x448", ],
         ],
-        "benchmark_image_count": [[1, 1, ], [1, 1, ], [1, 1, ],],
-        "benchmark_max_concurrency": [[20, 20,], [20, 20, ], [10,],],
+        "benchmark_image_count": [[1, 1, ], [1, 1, ], [1, ],],
+        "benchmark_max_concurrency": [[3, 3,], [3, 3, ], [3,],],
     },
     "pipeline_config": {
         "per_config_benchmark_times": 3,
