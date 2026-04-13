@@ -454,8 +454,8 @@ class ConfigBuilder:
 
     def __init__(self, project_root: str):
         self.project_root = project_root
-        self.template_dir = os.path.join(project_root, "launch_server_template")
-        self.opt_dir = os.path.join(project_root, "OPT")
+        self.template_dir = os.path.join(project_root, "configs", "templates")
+        self.opt_dir = os.path.join(project_root, "configs", "OPT")
 
         self.template_matcher = TemplateMatcher(self.template_dir)
         self.opt_matcher = OptMatcher(self.opt_dir)

@@ -150,8 +150,8 @@ class TemplateLoader:
         self.load_server_args_opts()
 
     def load_server_templates(self):
-        """Load launch server templates from launch_server_template/."""
-        template_dir = os.path.join(self.base_dir, "launch_server_template")
+        """Load launch server templates from configs/templates/."""
+        template_dir = os.path.join(self.base_dir, "configs", "templates")
         if not os.path.exists(template_dir):
             return
 
@@ -165,8 +165,8 @@ class TemplateLoader:
                 self.server_templates[template_id] = content
 
     def load_benchmark_templates(self):
-        """Load benchmark templates from benchmark_template/."""
-        template_dir = os.path.join(self.base_dir, "benchmark_template")
+        """Load benchmark templates from configs/templates/."""
+        template_dir = os.path.join(self.base_dir, "configs", "templates")
         if not os.path.exists(template_dir):
             return
 
@@ -180,8 +180,8 @@ class TemplateLoader:
                 self.benchmark_templates[template_id] = content
 
     def load_env_opts(self):
-        """Load environment options from OPT/ENV_OPT.md."""
-        filepath = os.path.join(self.base_dir, "OPT", "ENV_OPT.md")
+        """Load environment options from configs/OPT/ENV_OPT.md."""
+        filepath = os.path.join(self.base_dir, "configs", "OPT", "ENV_OPT.md")
         if not os.path.exists(filepath):
             return
 
@@ -201,8 +201,8 @@ class TemplateLoader:
                         self.env_opts.append(opt)
 
     def load_server_args_opts(self):
-        """Load server args options from OPT/SERVER_ARG_OPT.md."""
-        filepath = os.path.join(self.base_dir, "OPT", "SERVER_ARG_OPT.md")
+        """Load server args options from configs/OPT/SERVER_ARG_OPT.md."""
+        filepath = os.path.join(self.base_dir, "configs", "OPT", "SERVER_ARG_OPT.md")
         if not os.path.exists(filepath):
             return
 
