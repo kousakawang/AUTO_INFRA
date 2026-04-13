@@ -11,7 +11,49 @@ AUTO_INFRA automates three main processes for AI model serving evaluation:
 
 The framework is built around composable **skills** that can be used individually or orchestrated as a complete pipeline.
 
-## Quick Start: Running the Full Pipeline
+## Important: How the Agent Should Work
+
+### `examples/skill_based_pipeline.py` is a Reference Example, NOT the Only Entry Point
+
+The `skill_based_pipeline.py` demonstrates how skills can be composed, but for real tasks the agent should **design and write its own workflow script** tailored to the specific user request. For complex tasks (e.g., SLO-based throughput search, multi-model comparison, parameter sweeps), the agent should:
+
+1. Analyze the user's requirement
+2. Design a custom workflow that composes skills as needed
+3. Write the workflow as a Python script and save it under `workflows/` with a descriptive name (e.g., `workflows/slo_search_qwen3_20260413.py`)
+4. Execute the workflow script
+5. The `workflows/` folder serves as a record of all custom task workflows
+
+### Skills Can Be Called Iteratively and Multiple Times
+
+During a single task, skills may need to be invoked many times. For example:
+- **SLO-based throughput search**: The agent may generate multiple configs with different concurrency levels, launch/benchmark/kill services repeatedly in a loop
+- **Multi-model comparison**: The agent generates separate configs for each model, runs each through the pipeline, then compares results
+- **Parameter sweeps**: The agent iterates over optimization options, generating a new config for each combination
+
+The agent should treat each skill as a reusable building block — call `config_generator`, `service_manager`, `benchmark_runner`, etc. as many times as needed within a single workflow.
+
+### Agent Must Infer Unspecified Config Values
+
+When the user provides a raw request (natural language description or raw commands) that does not specify certain config fields, the **agent is responsible for determining reasonable defaults**:
+
+| Field | How the agent should determine it |
+|-------|----------------------------------|
+| `device_id` | Check available GPUs on the system (e.g., `nvidia-smi`), then assign free devices. For tp2, allocate 2 consecutive GPUs. Avoid conflicts between concurrent services. |
+| `port` | Use sequential ports starting from 8080 (8080, 8070, 8060, ...), ensuring no conflicts with running services. |
+| `basic_template_id` | Infer from the command structure — template 1 if `--disable-radix-cache` is present, template 2 otherwise. Default to 1 if uncertain. |
+| `env_opt_id` | Default to `[-1]` (no env optimization) unless the user specifies specific env vars that match entries in `configs/OPT/ENV_OPT.md`. |
+| `server_args_opt_id` | Default to `[-1]` (no server arg optimization) unless the user specifies specific server args that match entries in `configs/OPT/SERVER_ARG_OPT.md`. |
+| `benchmark_max_concurrency` | Default to `[20]` if not specified. For SLO search, the agent should pick a reasonable starting range. |
+| `per_config_benchmark_times` | Default to 5 for production benchmarks, can use 1-2 for quick exploratory runs. |
+| `model_deploy_method` | Infer from GPU count: 1 GPU → "tp1", 2 GPUs → "tp2", etc. |
+
+The agent should document its inferred values in the generated config file as comments, so the user can review and adjust.
+
+---
+
+## Quick Start: Running a Simple Benchmark
+
+For a straightforward benchmark task, you can use the example pipeline script directly:
 
 ### Step 1: Generate or prepare a config file
 
@@ -26,18 +68,17 @@ python3 -m skills.config_generator.generate_config --file request_case/raw_comma
 1. Compare with templates in `configs/templates/` to identify `basic_template_id`
 2. Compare with `configs/OPT/ENV_OPT.md` and `configs/OPT/SERVER_ARG_OPT.md` for opt IDs
 3. Extract model path, port, device IDs, tensor parallel size, benchmark params
-4. Refer to `skills/config_generator/config_builder.py` for implementation details
+4. For fields the user did not specify (device_id, port, etc.), the agent must determine them — see the "Agent Must Infer Unspecified Config Values" section above
+5. Refer to `skills/config_generator/config_builder.py` for implementation details
 
 ### Step 2: Run the pipeline (always dry-run first)
 
+For simple tasks, you can use the example pipeline:
 ```bash
 python3 examples/skill_based_pipeline.py --config test_cases/your_config.py --example full
 ```
 
-For manual skill composition mode:
-```bash
-python3 examples/skill_based_pipeline.py --config test_cases/your_config.py --example manual
-```
+For complex tasks, the agent should write a custom workflow script under `workflows/` and execute it.
 
 ### Outputs
 

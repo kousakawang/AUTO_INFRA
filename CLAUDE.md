@@ -23,8 +23,9 @@ AUTO_INFRA/
 │       └── SERVER_ARG_OPT.md
 ├── examples/
 │   ├── demo_config.py          # Example configuration
-│   ├── skill_based_pipeline.py # Main entry point (full + manual modes)
+│   ├── skill_based_pipeline.py # Reference example (not the only entry point)
 │   └── README.md
+├── workflows/                  # Agent-created custom workflow scripts
 ├── skills/                     # Modular skills (7 total)
 │   ├── config_generator/       # Generate configs from raw commands
 │   ├── config_validator/       # Validate and expand configs
