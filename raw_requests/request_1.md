@@ -1,0 +1,1 @@
+read the AGENT_GUIDE.md and I want you to finish task in request_case/general_requirement/request_case_1.md. You should make a plan and write it  into ./task_plan, then execute this plan directly.
